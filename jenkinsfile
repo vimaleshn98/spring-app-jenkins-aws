@@ -29,7 +29,7 @@ pipeline{
     stage("build & SonarQube analysis") {
             steps {
               withSonarQubeEnv('sonar-server-local') {
-                sh 'mvn clean package sonar:sonar'
+                sh 'mvn sonar:sonar'
             }
         }
     }
@@ -61,8 +61,6 @@ pipeline{
                             }
                         ]
             }''',
-            buildName: 'sample calulator',
-            buildNumber: '1'
             )
 
           rtDownload (
