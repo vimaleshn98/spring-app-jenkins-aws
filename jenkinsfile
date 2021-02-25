@@ -33,21 +33,21 @@ pipeline{
             }
         }
     }
-    stage("Quality Gate") {
-            steps {
-              sleep(60)
-              timeout(time: 1, unit: 'HOURS') {
-                script{
-                        def qg = waitForQualityGate() 
-                        if (qg.status != 'OK')
-                        {
-                            error "Pipeline aborted due to gate failure : ${qg.status}"
-                            waitForQualityGate abortPipeline: true
-                         }
-                    }
-              }
-            }
-          }
+    // stage("Quality Gate") {
+    //         steps {
+    //           sleep(60)
+    //           timeout(time: 1, unit: 'HOURS') {
+    //             script{
+    //                     def qg = waitForQualityGate() 
+    //                     if (qg.status != 'OK')
+    //                     {
+    //                         error "Pipeline aborted due to gate failure : ${qg.status}"
+    //                         waitForQualityGate abortPipeline: true
+    //                      }
+    //                 }
+    //           }
+    //         }
+    //     }
   }
   post{
       success{
@@ -57,7 +57,7 @@ pipeline{
                  "files": [
                              {
                                 "pattern": "target/*.jar",
-                                "target": "art-doc-dev-loc/${env.JOB_NAME}/"
+                                "target": "art-doc-dev-loc/mindsapp/"
                             }
                         ]
             }''',
@@ -68,7 +68,7 @@ pipeline{
                 spec:"""{
                      "files": [
                                 {
-                                    "pattern": "art-doc-dev-loc/${env.JOB_NAME}/**",
+                                    "pattern": "art-doc-dev-loc/mindsapp/**",
                                     "target": "artifacts/"      
                                 }
                             ]
@@ -76,7 +76,7 @@ pipeline{
             )
 
           sshagent(['20c7b532-4b27-48e5-8d94-efc415f57aca']){
-                    sh 'scp -r /var/jenkins_home/workspace/${env.JOB_NAME}/artifacts/${env.JOB_NAME}/*.jar ubuntu@18.224.3.212:/home/ubuntu/artifacts'
+                    sh 'scp -r /var/jenkins_home/workspace/mindsapp-spring/artifacts/mindsapp/*.jar ubuntu@18.224.3.212:/home/ubuntu/artifacts/mindsapp'
             }
 
 
