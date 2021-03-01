@@ -69,7 +69,7 @@ pipeline{
                     "files": [
                          {
                              "pattern": "art-doc-dev-loc/",
-                             "target": "artifacts/"
+                             "target": "artifacts-single/"
                         }
                      ]
                 }''',
@@ -80,7 +80,7 @@ pipeline{
           }
 
           withAWS(region:'us-west-2',credentials:'639a6d5a-4969-459e-b34b-e8f6d698b79a') {
-                    s3Upload(file:'artifacts/', bucket:'vimalesh-deploy', path:'artifacts/')
+                    s3Upload(file:'artifacts-single/', bucket:'vimalesh-deploy', path:'artifacts/')
           }
 
       }
