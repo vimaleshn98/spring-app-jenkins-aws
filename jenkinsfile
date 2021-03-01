@@ -79,9 +79,9 @@ pipeline{
                     sh 'scp -r target/*.jar ubuntu@54.190.49.106:/home/ubuntu/artifacts'
           }
 
-          withAWS(region:'us-west-2',credentials:'70be04d1-2159-4bd2-bf81-ad29e92c201e') {
-                    s3Upload(file:'target/*.jar', bucket:'vimalesh-deploy', path:'artifacts/')
-          }
+          // withAWS(region:'us-west-2',credentials:'70be04d1-2159-4bd2-bf81-ad29e92c201e') {
+          //           s3Upload(file:'target/*.jar', bucket:'vimalesh-deploy', path:'artifacts/')
+          // }
 
       }
       failure{
