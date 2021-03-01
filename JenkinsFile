@@ -1,0 +1,86 @@
+pipeline{
+  agent any  
+    tools{
+      maven 'mymaven'
+      jdk 'jdk11'
+    }
+  
+  stages {
+    stage('Build'){
+       steps {
+                sh'mvn clean package'
+                    
+                
+            }
+     }
+    stage('Test'){
+      steps{
+        sh 'mvn test'
+      }
+      }
+  
+    stage('collect artifact'){
+     steps{
+     archiveArtifacts artifacts: 'target/*.jar', followSymlinks: false
+     }
+     }
+     stage('deploy to artifactory')
+     {
+     steps{
+     
+     rtUpload (
+    serverId: 'artifactory-server',
+    spec: '''{
+          "files": [
+            {
+              "pattern": "target/*.jar",
+              "target": "art-doc-dev-loc"
+            }
+         ]
+    }''',
+ 
+    buildName: 'holyFrog',
+    buildNumber: '42'
+)
+     }}
+     stage('download from artifactory')
+         {
+            steps{
+     
+                rtDownload (
+                    serverId: 'artifactory-server',
+                    spec: '''{
+                    "files": [
+                         {
+                             "pattern": "art-doc-dev-loc/",
+                             "target": ""
+                        }
+                     ]
+                }''',
+ 
+)
+     }}
+
+     stage("deploy to ec2"){
+       steps{
+            sshagent(['f674a595-aa5a-4e23-90fb-eb8ee9341dfe']){
+                    sh 'scp -r target/*.jar ubuntu@54.190.49.106:/home/ubuntu/artifacts'
+        }
+       }
+     }
+
+     stage('upload to s3')
+     {
+         steps{
+              withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: '12f0f8aa-c438-4dac-ab6f-71fe73631ecf', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']])   {
+              // s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true,file:'	TeamManagement-0.0.1-SNAPSHOT.jar', bucket:'vimalesh-deploy', path:'var/jenkins_home/workspace/Spring-Pipeline/target/TeamManagement-0.0.1-SNAPSHOT.jar')
+              sh 'aws --version'
+          }
+         }
+     }
+       
+      
+  
+  }
+  }
+
