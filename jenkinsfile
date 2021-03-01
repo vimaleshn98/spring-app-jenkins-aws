@@ -28,7 +28,7 @@ pipeline{
     
     stage("build & SonarQube analysis") {
             steps {
-              withSonarQubeEnv('sonar-server-local') {
+              withSonarQubeEnv('sonarqube2') {
                 sh 'mvn sonar:sonar'
             }
         }
@@ -52,45 +52,39 @@ pipeline{
   post{
       success{
           rtUpload (
-            serverId: 'ARTIFACTORY-SERVER',
-            spec: '''{
-                 "files": [
-                             {
-                                "pattern": "target/*.jar",
-                                "target": "art-doc-dev-loc/mindsapp/"
-                            }
-                        ]
-            }''',
-            )
+    serverId: 'artifactory-server',
+    spec: '''{
+          "files": [
+            {
+              "pattern": "target/*.jar",
+              "target": "art-doc-dev-loc"
+            }
+         ]
+    }'''
+  )
 
           rtDownload (
-                 serverId: "ARTIFACTORY-SERVER",
-                spec:"""{
-                     "files": [
-                                {
-                                    "pattern": "art-doc-dev-loc/mindsapp/**",
-                                    "target": "artifacts/"      
-                                }
-                            ]
-              }"""
-            )
-          sshagent(['20c7b532-4b27-48e5-8d94-efc415f57aca']){
-                    sh 'scp -r /var/jenkins_home/workspace/mindsapp-spring/artifacts/mindsapp/*.jar ubuntu@3.135.63.62:/home/ubuntu/artifacts/'
+                    serverId: 'artifactory-server',
+                    spec: '''{
+                    "files": [
+                         {
+                             "pattern": "art-doc-dev-loc/",
+                             "target": ""
+                        }
+                     ]
+                }''',
+ 
+      )
+          sshagent(['f674a595-aa5a-4e23-90fb-eb8ee9341dfe']){
+                    sh 'scp -r target/*.jar ubuntu@54.190.49.106:/home/ubuntu/artifacts'
           }
 
-          withAWS(region:'us-east-2',credentials:'70be04d1-2159-4bd2-bf81-ad29e92c201e') {
-                    s3Upload(file:'artifacts/mindsapp/*.jar', bucket:'jenkinssujjadbucket', path:'artifacts/')
-          }
-
-          mail to: 'efskwgkkwhae@inilogic.com', from: 'commonteesta@gmail.com',
-              subject: "Example Build: ${env.JOB_NAME} - success", 
-              body: "Job success - \"${env.JOB_NAME}\" build: ${env.BUILD_NUMBER}\n\nView the log at:\n ${env.BUILD_URL}"
+          // withAWS(region:'us-east-2',credentials:'70be04d1-2159-4bd2-bf81-ad29e92c201e') {
+          //           s3Upload(file:'artifacts/mindsapp/*.jar', bucket:'jenkinssujjadbucket', path:'artifacts/')
+          // }
 
       }
       failure {
-            mail to: 'efskwgkkwhae@inilogic.com', from: 'commonteesta@gmail.com',
-                subject: "Example Build: ${env.JOB_NAME} - failed", 
-                body: "Job failed - \"${env.JOB_NAME}\" build: ${env.BUILD_NUMBER}\n\nView the log at:\n ${env.BUILD_URL}"
 
         }
 
