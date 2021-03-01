@@ -69,14 +69,7 @@ pipeline{
        }
      }
 
-     stage('upload to s3')
-     {
-         steps{
-              withCredentials([[$class: 'AmazonWebServicesCredentialsBinding', accessKeyVariable: 'AWS_ACCESS_KEY_ID', credentialsId: '12f0f8aa-c438-4dac-ab6f-71fe73631ecf', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY']])   {
-              // s3Upload(pathStyleAccessEnabled: true, payloadSigningEnabled: true,file:'	TeamManagement-0.0.1-SNAPSHOT.jar', bucket:'vimalesh-deploy', path:'var/jenkins_home/workspace/Spring-Pipeline/target/TeamManagement-0.0.1-SNAPSHOT.jar')
-              sh 'aws --version'
-          }
-         }
+   
      }
        
       
