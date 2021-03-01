@@ -76,10 +76,8 @@ pipeline{
             )
 
           sshagent(['20c7b532-4b27-48e5-8d94-efc415f57aca']){
-                    sh 'scp -r /var/jenkins_home/workspace/mindsapp-spring/artifacts/mindsapp/*.jar ubuntu@18.224.3.212:/home/ubuntu/artifacts/'
+                    sh 'scp -r /var/jenkins_home/workspace/mindsapp-spring/artifacts/mindsapp/*.jar ubuntu@3.135.63.62:/home/ubuntu/artifacts/'
             }
-
-
 
 
             mail to: 'efskwgkkwhae@inilogic.com', from: 'commonteesta@gmail.com',
