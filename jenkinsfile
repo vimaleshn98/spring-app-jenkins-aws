@@ -79,7 +79,7 @@ pipeline{
           }
 
           withAWS(region:'us-east-2',credentials:'70be04d1-2159-4bd2-bf81-ad29e92c201e') {
-                    s3Upload(file:'artifacts/*.jar', bucket:'jenkinssujjadbucket', path:'artifacts/')
+                    s3Upload(file:'artifacts/mindsapp/*.jar', bucket:'jenkinssujjadbucket', path:'artifacts/')
           }
 
           mail to: 'efskwgkkwhae@inilogic.com', from: 'commonteesta@gmail.com',
