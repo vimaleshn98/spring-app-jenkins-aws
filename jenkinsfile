@@ -68,7 +68,7 @@ pipeline{
                     spec: '''{
                     "files": [
                          {
-                             "pattern": "art-doc-dev-loc/",
+                             "pattern": "art-doc-dev-loc/MindsApp-0.0.1-SNAPSHOT.jar",
                              "target": "artifacts-single/"
                         }
                      ]
